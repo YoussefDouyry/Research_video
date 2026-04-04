@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiment Video</title>
+</head>
+<body>
+
+<video 
+    src="Video Project 1.mp4"
+    autoplay 
+    muted 
+    playsinline 
+    width="50%" 
+    height="300px">
+</video>
+
+<script>
+    const video = document.querySelector("video");
+
+    // Prevent pause ONLY if video is not ended
+    video.addEventListener("pause", () => {
+        if (!video.ended) {
+            video.play();
+        }
+    });
+
+    // Redirect when video finishes
+    video.addEventListener("ended", () => {
+        alert("Video finished. You will now proceed to the test.");
+        window.location.href = "https://your-google-form-link.com";
+    });
+
+    // Disable right-click
+    video.addEventListener("contextmenu", e => e.preventDefault());
+</script>
+
+</body>
+</html>
