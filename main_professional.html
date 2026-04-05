@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Experiment Video</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-soft: #111827;
+      --card: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.14);
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --success: #22c55e;
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.14), transparent 25%),
+        linear-gradient(135deg, var(--bg), var(--bg-soft));
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 980px;
+    }
+
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 28px 32px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #bfdbfe;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    .content {
+      padding: 28px 32px 32px;
+    }
+
+    .video-shell {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 22px;
+    }
+
+    .video-frame {
+      overflow: hidden;
+      border-radius: 16px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+      background: #000;
+      aspect-ratio: 16 / 9;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: 0.96rem;
+      line-height: 1.6;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.15);
+      animation: pulse 1.8s infinite;
+    }
+
+    .cta {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: var(--success);
+      color: white;
+      text-decoration: none;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+    }
+
+    .cta:hover {
+      transform: translateY(-1px);
+      background: #16a34a;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      70% { transform: scale(1.25); opacity: 0.65; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @media (max-width: 700px) {
+      .header,
+      .content {
+        padding: 22px 18px;
+      }
+
+      .video-shell {
+        padding: 12px;
+      }
+
+      .footer {
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="card">
+      <header class="header">
+        <span class="eyebrow">Assessment Portal</span>
+        <h1>Watch the video carefully before proceeding</h1>
+        <p class="subtitle">
+          Please view the full experiment video. Once playback is complete, you will be redirected automatically to continue with the test.
+        </p>
+      </header>
+
+      <div class="content">
+        <div class="video-shell">
+          <div class="video-frame">
+            <video
+              src="Video Project 1.mp4"
+              autoplay 
+              playsinline
+            ></video>
+          </div>
+        </div>
+
+        <div class="footer">
+          <p class="note">
+            Keep this page open during playback. Pausing and right-click actions are disabled to preserve the viewing flow.
+          </p>
+
+          <div class="status" id="status">
+            <span class="status-dot"></span>
+            <span id="statusText">Video in progress</span>
+          </div>
+
+          <a class="cta" id="continueBtn" href="https://your-google-form-link.com">
+            Continue to test
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const video = document.querySelector("video");
+    const statusText = document.getElementById("statusText");
+    const continueBtn = document.getElementById("continueBtn");
+
+    video.addEventListener("pause", () => {
+      if (!video.ended) {
+        video.play();
+      }
+    });
+
+    video.addEventListener("ended", () => {
+      statusText.textContent = "Video completed";
+      continueBtn.style.display = "inline-flex";
+
+      setTimeout(() => {
+        window.location.href = "https://your-google-form-link.com";
+      }, 1200);
+    });
+
+    video.addEventListener("contextmenu", (e) => e.preventDefault());
+  </script>
+  <video id="video" src="Video Project 1.mp4" playsinline></video>
+
+  <button onclick="startVideo()">Start Video</button>
+  
+</body>
+</html>

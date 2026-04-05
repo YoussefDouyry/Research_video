@@ -1,40 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Experiment Video</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background:
+                radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 30%),
+                radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.12), transparent 25%),
+                linear-gradient(135deg, #0f172a, #111827);
+            font-family: Arial, Helvetica, sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            text-align: center;
+            position: relative;
+            animation: fadeInUp 1s ease;
+        }
+
+        .title {
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            animation: fadeIn 1.2s ease;
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+            font-size: 1rem;
+            margin-bottom: 30px;
+            animation: fadeIn 1.6s ease;
+        }
+
+        .video-wrapper {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            background: black;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        video {
+            width: 100%;
+            display: block;
+            background: black;
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.72);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 16px;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+            z-index: 2;
+        }
+
+        .overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .start-btn {
+            padding: 16px 34px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.35);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+            animation: pulse 1.8s infinite;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 18px 35px rgba(37, 99, 235, 0.45);
+        }
+
+        .start-btn:active {
+            transform: scale(0.98);
+        }
+
+        .overlay-text {
+            color: #e2e8f0;
+            font-size: 0.98rem;
+            max-width: 500px;
+            line-height: 1.6;
+            padding: 0 20px;
+        }
+
+        .status {
+            margin-top: 18px;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            min-height: 24px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-top: 18px;
+        }
+
+        .progress {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #22c55e, #3b82f6);
+            transition: width 0.2s linear;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.04);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 1.5rem;
+            }
+
+            .subtitle {
+                font-size: 0.95rem;
+            }
+
+            .start-btn {
+                font-size: 1rem;
+                padding: 14px 28px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<video 
-    src="Video Project 1.mp4"
-    autoplay 
-    muted 
-    playsinline 
-    width="50%" 
-    height="300px">
-</video>
+    <div class="container">
+        <div class="title">Experiment Video</div>
+        <div class="subtitle">
+            Watch the video carefully. You can only watch it once. After it finishes, you will automatically continue to the test.
+        </div>
 
-<script>
-    const video = document.querySelector("video");
+        <div class="video-wrapper">
+            <div class="overlay" id="overlay">
+                <button class="start-btn" id="startBtn">Start Video</button>
+                <div class="overlay-text">
+                    Once started, the video cannot be paused or replayed. At the end, you will be redirected to the test automatically.
+                </div>
+            </div>
 
-    // Prevent pause ONLY if video is not ended
-    video.addEventListener("pause", () => {
-        if (!video.ended) {
-            video.play();
-        }
-    });
+            <video id="video" playsinline preload="auto" type="video/mp4">
+                <source src="https://drive.google.com/file/d/1Vk-Cj_OdK-i3ARm5Z2R8Q7dkgFcIJffH/view" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
 
-    // Redirect when video finishes
-    video.addEventListener("ended", () => {
-        alert("Video finished. You will now proceed to the test.");
-        window.location.href = "https://your-google-form-link.com";
-    });
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
 
-    // Disable right-click
-    video.addEventListener("contextmenu", e => e.preventDefault());
-</script>
+        <div class="status" id="statusText">Ready to start</div>
+    </div>
+
+    <script>
+        const video = document.getElementById("video");
+        const startBtn = document.getElementById("startBtn");
+        const overlay = document.getElementById("overlay");
+        const statusText = document.getElementById("statusText");
+        const progress = document.getElementById("progress");
+
+        let hasStarted = false;
+        let hasEnded = false;
+
+        startBtn.addEventListener("click", async () => {
+            if (hasStarted) return;
+
+            hasStarted = true;
+            overlay.classList.add("hidden");
+            statusText.textContent = "Video is playing...";
+
+            try {
+                video.currentTime = 0;
+                video.controls = false;
+                video.loop = false;
+                video.muted = false;
+                video.volume = 1;
+                await video.play();
+            } catch (error) {
+                statusText.textContent = "Autoplay with sound was blocked. Please click the page once.";
+                console.error(error);
+            }
+        });
+
+        video.addEventListener("pause", () => {
+            if (!video.ended && hasStarted) {
+                video.play().catch(() => {});
+            }
+        });
+
+        video.addEventListener("seeking", () => {
+            if (hasStarted && !video.ended) {
+                if (video.currentTime > 0) {
+                    video.currentTime = Math.max(0, video.currentTime);
+                }
+            }
+        });
+
+        video.addEventListener("contextmenu", (e) => e.preventDefault());
+
+        video.addEventListener("timeupdate", () => {
+            if (video.duration) {
+                const percent = (video.currentTime / video.duration) * 100;
+                progress.style.width = percent + "%";
+            }
+        });
+
+        video.addEventListener("ended", () => {
+            if (hasEnded) return;
+
+            hasEnded = true;
+            statusText.textContent = "Video finished. Redirecting to the test...";
+            progress.style.width = "100%";
+
+            setTimeout(() => {
+                window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLScB56OfvBlerydAEHXDTaJfLWcyGpfH-YgCsPv9pEDZIwCP-Q/viewform?usp=header";
+            }, 1500);
+        });
+
+        document.addEventListener("keydown", (e) => {
+            const blockedKeys = [" ", "Spacebar", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
+            if (blockedKeys.includes(e.key)) {
+                e.preventDefault();
+            }
+        });
+    </script>
 
 </body>
 </html>
