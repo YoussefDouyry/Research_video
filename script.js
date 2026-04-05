@@ -1,113 +1,208 @@
 const video = document.getElementById("video");
-        const overlay = document.getElementById("overlay");
-        const statusText = document.getElementById("statusText");
-        const progress = document.getElementById("progress");
-        const speedBadge = document.getElementById("speedBadge");
-        const speedButtons = document.querySelectorAll(".speed-btn");
+const overlay = document.getElementById("overlay");
+const statusText = document.getElementById("statusText");
+const progress = document.getElementById("progress");
+const speedBadge = document.getElementById("speedBadge");
+const speedButtons = document.querySelectorAll(".speed-btn");
+const timerText = document.getElementById("timerText");
 
-        let hasStarted = false;
-        let hasEnded = false;
-        let selectedSpeed = null;
-        let lastAllowedTime = 0;
+let hasStarted = false;
+let hasEnded = false;
+let selectedSpeed = null;
+let lastAllowedTime = 0;
 
-        async function startVideoWithSpeed(speed) {
-            if (hasStarted) return;
+/* ============================= */
+/* 🔒 BLOCK ACCESS IF REFRESHED  */
+/* ============================= */
 
-            hasStarted = true;
-            selectedSpeed = speed;
+if (localStorage.getItem("videoStarted") === "true") {
+    document.body.innerHTML = `
+        <div style="
+            display:flex;
+            height:100vh;
+            justify-content:center;
+            align-items:center;
+            background:#0f172a;
+            color:white;
+            font-family:Arial;
+            text-align:center;
+            padding:20px;
+        ">
+            <div>
+                <h1>Access blocked</h1>
+                <p>You refreshed the page during the experiment.<br>
+                Please restart the session.</p>
+            </div>
+        </div>
+    `;
+}
 
-            video.currentTime = 0;
-            video.controls = false;
-            video.loop = false;
-            video.muted = false;
-            video.volume = 1;
-            video.playbackRate = speed;
-            video.defaultPlaybackRate = speed;
+/* ============================= */
+/* ⏱ FORMAT TIMER               */
+/* ============================= */
 
-            speedBadge.textContent = `Selected speed: x${speed}`;
-            statusText.textContent = `Video is playing at x${speed}...`;
-            overlay.classList.add("hidden");
+function formatTime(seconds) {
+    const safe = Math.max(0, Math.ceil(seconds));
+    const m = String(Math.floor(safe / 60)).padStart(2, "0");
+    const s = String(safe % 60).padStart(2, "0");
+    return `${m}:${s}`;
+}
 
-            try {
-                await video.play();
-            } catch (error) {
-                statusText.textContent = "Playback was blocked. Please click again.";
-                hasStarted = false;
-                overlay.classList.remove("hidden");
-                console.error(error);
-            }
+/* ============================= */
+/* ▶ START VIDEO                */
+/* ============================= */
+
+async function startVideoWithSpeed(speed) {
+    if (hasStarted) return;
+
+    hasStarted = true;
+    selectedSpeed = speed;
+
+    // 🚨 mark session started (anti-refresh)
+    localStorage.setItem("videoStarted", "true");
+
+    video.currentTime = 0;
+    video.controls = false;
+    video.loop = false;
+    video.muted = false;
+    video.volume = 1;
+    video.playbackRate = speed;
+    video.defaultPlaybackRate = speed;
+
+    speedBadge.textContent = `x${speed}`;
+    statusText.textContent = `Playing at x${speed}`;
+    timerText.textContent = "Loading...";
+
+    overlay.classList.add("hidden");
+
+    try {
+        await video.play();
+    } catch (error) {
+        statusText.textContent = "Playback blocked. Click again.";
+        hasStarted = false;
+        overlay.classList.remove("hidden");
+        console.error(error);
+    }
+}
+
+/* ============================= */
+/* 🎯 SPEED BUTTONS             */
+/* ============================= */
+
+speedButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+        const speed = parseFloat(btn.dataset.speed);
+        startVideoWithSpeed(speed);
+    });
+});
+
+/* ============================= */
+/* ⏱ TIMER + PROGRESS          */
+/* ============================= */
+
+video.addEventListener("loadedmetadata", () => {
+    if (video.duration) {
+        timerText.textContent = formatTime(video.duration);
+    }
+});
+
+video.addEventListener("timeupdate", () => {
+    if (video.duration) {
+        const percent = (video.currentTime / video.duration) * 100;
+        progress.style.width = percent + "%";
+
+        const remaining = video.duration - video.currentTime;
+        timerText.textContent = formatTime(remaining);
+    }
+
+    if (!video.seeking) {
+        lastAllowedTime = video.currentTime;
+    }
+});
+
+/* ============================= */
+/* 🔒 ANTI CHEAT                */
+/* ============================= */
+
+// ❌ Prevent pause
+video.addEventListener("pause", () => {
+    if (!video.ended && hasStarted) {
+        video.play().catch(() => {});
+    }
+});
+
+// ❌ Prevent skip forward
+video.addEventListener("seeking", () => {
+    if (hasStarted && !video.ended) {
+        if (video.currentTime > lastAllowedTime + 0.3) {
+            video.currentTime = lastAllowedTime;
         }
+    }
+});
 
-        speedButtons.forEach((button) => {
-            button.addEventListener("click", () => {
-                const speed = parseFloat(button.dataset.speed);
-                startVideoWithSpeed(speed);
-            });
-        });
+// ❌ Prevent changing speed manually
+video.addEventListener("ratechange", () => {
+    if (hasStarted && selectedSpeed && video.playbackRate !== selectedSpeed) {
+        video.playbackRate = selectedSpeed;
+    }
+});
 
-        video.addEventListener("play", () => {
-            if (selectedSpeed) {
-                video.playbackRate = selectedSpeed;
-            }
-        });
+// ❌ Disable right click
+video.addEventListener("contextmenu", (e) => e.preventDefault());
 
-        video.addEventListener("ratechange", () => {
-            if (hasStarted && selectedSpeed && video.playbackRate !== selectedSpeed) {
-                video.playbackRate = selectedSpeed;
-            }
-        });
+// ❌ Block keyboard controls
+document.addEventListener("keydown", (e) => {
+    const blockedKeys = [
+        " ",
+        "Spacebar",
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowUp",
+        "ArrowDown",
+        "MediaPlayPause"
+    ];
+    if (blockedKeys.includes(e.key)) {
+        e.preventDefault();
+    }
+});
 
-        video.addEventListener("timeupdate", () => {
-            if (video.duration) {
-                const percent = (video.currentTime / video.duration) * 100;
-                progress.style.width = percent + "%";
-            }
+/* ============================= */
+/* 🔒 REFRESH WARNING           */
+/* ============================= */
 
-            if (!video.seeking) {
-                lastAllowedTime = video.currentTime;
-            }
-        });
+window.onbeforeunload = function () {
+    if (hasStarted && !hasEnded) {
+        return "You cannot leave or refresh during the experiment.";
+    }
+};
 
-        video.addEventListener("pause", () => {
-            if (!video.ended && hasStarted) {
-                video.play().catch(() => {});
-            }
-        });
+/* ============================= */
+/* 👀 TAB SWITCH DETECTION      */
+/* ============================= */
 
-        video.addEventListener("seeking", () => {
-            if (hasStarted && !video.ended) {
-                if (video.currentTime > lastAllowedTime + 0.3) {
-                    video.currentTime = lastAllowedTime;
-                }
-            }
-        });
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden && hasStarted && !video.ended) {
+        alert("Please stay on the video page!");
+    }
+});
 
-        video.addEventListener("contextmenu", (e) => e.preventDefault());
+/* ============================= */
+/* ✅ VIDEO END                 */
+/* ============================= */
 
-        video.addEventListener("ended", () => {
-            if (hasEnded) return;
+video.addEventListener("ended", () => {
+    if (hasEnded) return;
 
-            hasEnded = true;
-            progress.style.width = "100%";
-            statusText.textContent = "Video finished. Redirecting to the test...";
+    hasEnded = true;
 
-            setTimeout(() => {
-                window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLScB56OfvBlerydAEHXDTaJfLWcyGpfH-YgCsPv9pEDZIwCP-Q/viewform?usp=header";
-            }, 1500);
-        });
+    progress.style.width = "100%";
+    timerText.textContent = "00:00";
+    statusText.textContent = "Finished. Redirecting...";
 
-        document.addEventListener("keydown", (e) => {
-            const blockedKeys = [
-                " ",
-                "Spacebar",
-                "ArrowLeft",
-                "ArrowRight",
-                "ArrowUp",
-                "ArrowDown",
-                "MediaPlayPause"
-            ];
+    // ✅ allow future sessions
+    localStorage.removeItem("videoStarted");
 
-            if (blockedKeys.includes(e.key)) {
-                e.preventDefault();
-            }
-        });
+    setTimeout(() => {
+        window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLScB56OfvBlerydAEHXDTaJfLWcyGpfH-YgCsPv9pEDZIwCP-Q/viewform?usp=header";
+    }, 1500);
+});
