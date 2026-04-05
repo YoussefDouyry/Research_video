@@ -111,7 +111,7 @@ video.addEventListener("ended", () => {
     statusText.textContent = "Finished. Redirecting...";
 
     setTimeout(() => {
-        window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLScB56OfvBlerydAEHXDTaJfLWcyGpfH-YgCsPv9pEDZIwCP-Q/viewform?usp=header";
+        window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSffnlRRBBHZgnWQBO9j4Foc-jWRqHboSY7JvGeMYSgnM_jAuQ/viewform?usp=header";
     }, 1500);
 });
 
