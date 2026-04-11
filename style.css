@@ -189,6 +189,7 @@ video {
 
 .speed-options {
     margin-top: 22px;
+    margin-left: 200px;
     display: grid;
     grid-template-columns: repeat(2, minmax(220px, 1fr));
     gap: 16px;
@@ -206,6 +207,7 @@ video {
     cursor: pointer;
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18);
+    margin: auto;
 }
 
 .speed-btn:hover {
@@ -315,6 +317,8 @@ video {
 
     .choice-panel {
         padding: 22px;
+        margin: auto;
+        width: 200px;
     }
 }
 

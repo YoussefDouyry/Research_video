@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Experiment Video</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../style.css" />
 </head>
 <body>
 
@@ -15,9 +15,9 @@
         <main class="app-card">
             <header class="hero">
                 <div class="hero-badge">Research Session</div>
-                <h1 class="title">Video Experiment</h1>
+                <h1 class="title">Video Experiment x1 speed</h1>
                 <p class="subtitle">
-                    Please select a playback mode before starting. The video can only be watched once, and you will be redirected automatically to the test after playback ends.
+                    Click to start the video. This version plays at 1x speed. The video can only be watched once, and you will be redirected automatically to the test after playback ends.
                 </p>
             </header>
 
@@ -25,10 +25,10 @@
                 <div class="video-wrapper">
                     <div class="overlay" id="overlay">
                         <div class="choice-panel">
-                            <h2 class="choice-title">Choose playback speed</h2>
-                            <p class="choice-subtitle">
+                            <!-- <h2 class="choice-title">Choose playback speed</h2> -->
+                            <!-- <p class="choice-subtitle">
                                 Select one option below. The video will start immediately with your selected speed.
-                            </p>
+                            </p> -->
 
                             <div class="speed-options">
                                 <button class="speed-btn" data-speed="1">
@@ -36,10 +36,10 @@
                                     <span>Standard playback speed</span>
                                 </button>
 
-                                <button class="speed-btn" data-speed="1.5">
+                                <!-- <button class="speed-btn" data-speed="1.5">
                                     <strong>Watch with speed 1.5</strong>
                                     <span>Accelerated playback speed</span>
-                                </button>
+                                </button> -->
                             </div>
 
                             <p class="overlay-text">
@@ -49,7 +49,7 @@
                     </div>
 
                     <video id="video" playsinline preload="auto">
-                        <source src="video.mp4" type="video/mp4">
+                        <source src="../video.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
                 </div>
@@ -73,13 +73,13 @@
 
                     <div class="meta-card">
                         <div class="meta-label">Selected speed</div>
-                        <div class="meta-value" id="speedBadge">Not selected yet</div>
+                        <div class="meta-value" id="speedBadge">x1</div>
                     </div>
                 </div>
             </section>
         </main>
     </div>
 
-    <script src="script.js"></script>
+    <script src="../script.js"></script>
 </body>
 </html>

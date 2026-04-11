@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Experiment Video</title>
+    <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+
+    <div class="page-shell">
+        <div class="background-glow glow-1"></div>
+        <div class="background-glow glow-2"></div>
+
+        <main class="app-card">
+            <header class="hero">
+                <div class="hero-badge">Research Session</div>
+                <h1 class="title">Video Experiment x1.5 speed</h1>
+                <p class="subtitle">
+                    Click to start the video. This version plays at 1.5x speed. The video can only be watched once, and you will be redirected automatically to the test after playback ends.
+                </p>
+            </header>
+
+            <section class="video-section">
+                <div class="video-wrapper">
+                    <div class="overlay" id="overlay">
+                        <div class="choice-panel">
+                            <!-- <h2 class="choice-title">Choose playback speed</h2> -->
+                            <!-- <p class="choice-subtitle">
+                                Select one option below. The video will start immediately with your selected speed.
+                            </p> -->
+
+                            <div class="speed-options">
+                                <!-- <button class="speed-btn" data-speed="1">
+                                    <strong>Watch with speed 1.0</strong>
+                                    <span>Standard playback speed</span>
+                                </button> -->
+
+                                <button class="speed-btn" data-speed="1.5">
+                                    <strong>Watch with speed 1.5</strong>
+                                    <span>Accelerated playback speed</span>
+                                </button>
+                            </div>
+
+                            <p class="overlay-text">
+                                Once playback starts, the video cannot be paused, replayed, or manually controlled.
+                            </p>
+                        </div>
+                    </div>
+
+                    <video id="video" playsinline preload="auto">
+                        <source src="../video.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </section>
+
+            <section class="info-panel">
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+
+                <div class="meta-grid">
+                    <div class="meta-card">
+                        <div class="meta-label">Remaining time</div>
+                        <div class="meta-value" id="timerText">--:--</div>
+                    </div>
+
+                    <div class="meta-card">
+                        <div class="meta-label">Playback status</div>
+                        <div class="meta-value status-text" id="statusText">Waiting for selection</div>
+                    </div>
+
+                    <div class="meta-card">
+                        <div class="meta-label">Selected speed</div>
+                        <div class="meta-value" id="speedBadge">x1.5</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="../script.js"></script>
+</body>
+</html>
