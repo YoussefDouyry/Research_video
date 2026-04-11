@@ -78,7 +78,25 @@ video.addEventListener("timeupdate", () => {
         progress.style.width = percent + "%";
 
         const remaining = video.duration - video.currentTime;
-        timerText.textContent = formatTime(remaining);
+        const formatted = formatTime(remaining);
+
+        // update text
+        timerText.textContent = formatted;
+
+        // trigger animation
+        timerText.classList.remove("timer-update");
+        void timerText.offsetWidth; // force reflow
+        timerText.classList.add("timer-update");
+
+        // remove previous states
+        timerText.classList.remove("timer-warning", "timer-danger");
+
+        // add urgency effects
+        if (remaining <= 10) {
+            timerText.classList.add("timer-danger");
+        } else if (remaining <= 30) {
+            timerText.classList.add("timer-warning");
+        }
     }
 
     if (!video.seeking) {
@@ -88,7 +106,7 @@ video.addEventListener("timeupdate", () => {
 
 video.addEventListener("pause", () => {
     if (!video.ended && hasStarted) {
-        video.play().catch(() => {});
+        video.play().catch(() => { });
     }
 });
 
